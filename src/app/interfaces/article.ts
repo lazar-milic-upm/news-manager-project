@@ -1,7 +1,8 @@
 export interface Article {
     id: number;
     title: string;
+    abstract: string;
     subtitle: string;
-    body: string;
-    imageUrl?: string;
+    update_date: Date;
+    category: string;
 }

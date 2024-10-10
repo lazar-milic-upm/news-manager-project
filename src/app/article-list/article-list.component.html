@@ -3,7 +3,7 @@
         <div class="row">
             <div *ngFor="let article of articles" class="col-md-4 mb-4">
                 <div class="card h-100 shadow-sm">
-                    <img [src]="article.imageUrl" class="card-img-top" alt="Article Image" *ngIf="article.imageUrl; else noImage">
+                    <!--<img [src]="article.imageUrl" class="card-img-top" alt="Article Image" *ngIf="article.imageUrl; else noImage">-->
                     <ng-template #noImage>
                         <img src="assets/default-image.jpg" class="card-img-top" alt="Default Image">
                     </ng-template>

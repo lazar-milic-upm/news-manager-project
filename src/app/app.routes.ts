@@ -7,5 +7,5 @@ export const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     { path: 'home', component: ArticleListComponent },
     { path: 'login', component: LoginComponent },
-    { path: 'articles/:id', component: ArticleDetailComponent } // Route for article detail with ID
+    { path: 'article-detail/:id', component: ArticleDetailComponent } // Route for article detail with ID
 ];
