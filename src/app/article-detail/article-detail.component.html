@@ -1,1 +1,15 @@
-<p>article-detail works!</p>
+<div class="container">
+    <div class="row">
+        <div class="card mb-4">
+            <div *ngIf="article" class="card-body">
+                <h5 class="card-title">{{ article.title }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ article.subtitle }}</h6>
+                <img *ngIf="article.image_data" [src]="'data:' + article.image_media_type + ';base64,' + article.image_data" class="card-img-top" alt="{{ article.title }}">
+                <p class="card-text"><strong>Date:</strong> {{ article.update_date}}</p>
+                <p class="card-text"><strong>Category:</strong> {{ article.category }}</p>
+                <p class="card-text">{{ article.abstract }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+  
