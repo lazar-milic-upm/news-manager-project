@@ -1,3 +1,5 @@
+import { Data } from "@angular/router";
+
 export interface Article {
     id: number;
     title: string;
@@ -8,5 +10,4 @@ export interface Article {
     modifiedDate: Date;
     imageUrl?: string;
     category: string;
-    modifiedBy: string;
 }
