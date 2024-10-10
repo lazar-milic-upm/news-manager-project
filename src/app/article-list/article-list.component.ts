@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgFor,NgIf } from '@angular/common';
+import { Router } from '@angular/router';
 import { Article } from '../interfaces/article'
 import { NewsService } from '../services/news-service';
 
@@ -8,7 +9,7 @@ import { NewsService } from '../services/news-service';
   standalone: true,
   imports: [NgFor, NgIf],
   templateUrl: './article-list.component.html',
-  styleUrl: './article-list.component.css'
+  styleUrls: ['./article-list.component.css']
 })
 export class ArticleListComponent implements OnInit{
 
@@ -16,7 +17,7 @@ export class ArticleListComponent implements OnInit{
   article: Article | null | undefined;
   message: string | null | undefined;
 
-  constructor(private newsService: NewsService) {}
+  constructor(private newsService: NewsService, private router: Router) {}
 
   ngOnInit(): void {
     this.newsService.getArticles().subscribe({
@@ -28,5 +29,9 @@ export class ArticleListComponent implements OnInit{
         console.log('getArticles() error: ' + err);
       },
     });
+  }
+  
+  navigateToArticle(id: number): void {
+    this.router.navigate(['/articles', id]);
   }
 }
