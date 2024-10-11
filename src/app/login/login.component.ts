@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { User } from '../interfaces/user';
+import { LoginService } from '../services/login.service';
 
 
 @Component({
@@ -18,14 +19,17 @@ export class LoginComponent {
   errorMessage: string | null = null;
   currentUser: User | null = null;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, public loginService: LoginService) {}
 
   login() {
-    if (this.username && this.password) {
-      this.router.navigate(['/home']); // Navigate to home upon successful login
-    } else {
-      this.errorMessage = 'Please enter a username and password';
-    }
+    this.loginService.login(this.username, this.password).subscribe({
+      next: () => {
+        this.router.navigate(['/home']);
+      },
+      error: () => {
+        this.errorMessage = 'Login failed. Please try again.';
+      }
+    });
   }
 
   skipLogin() {

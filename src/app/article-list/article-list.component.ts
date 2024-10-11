@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ArticleCategoryFilterPipe } from '../pipes/article-category-filter.pipe';
 import { ArticleTextFilterPipe } from '../pipes/article-text-filter.pipe';
+import { LoginService } from '../services/login.service';
 
 
 @Component({
@@ -24,10 +25,13 @@ export class ArticleListComponent implements OnInit{
   error: string | null = null;
   category: string = 'All';
   searchText: string = '';
+  isLoggedIn: boolean = false;
 
-  constructor(private newsService: NewsService, private router: Router) {}
+  constructor(private newsService: NewsService, private router: Router, public loginService: LoginService) {}
 
   ngOnInit(): void {
+    this.isLoggedIn = this.loginService.isLogged();
+
     this.newsService.getArticles().subscribe({
       next: (data) => {
         this.articles = data;
@@ -54,6 +58,16 @@ export class ArticleListComponent implements OnInit{
   onSearchChange(value: string) {
     console.log('Search Text Updated:', value);
     this.searchText = value;
+  }
+
+  logout() {
+    this.loginService.logout();
+    this.isLoggedIn = false;
+    this.router.navigate(['/login']);
+  }
+
+  login() {
+    this.router.navigate(['/login']);
   }
   
 }

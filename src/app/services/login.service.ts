@@ -47,7 +47,6 @@ export class LoginService {
     this.user = null;
   }
 
-
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       this.user = null;
