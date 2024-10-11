@@ -1,0 +1,24 @@
+<div class="container mt-4" *ngIf="article; else loading">
+    <h2>{{ article?.title }}</h2>
+    <h4>{{ article?.subtitle }}</h4>
+    <p><strong>Category: </strong>{{ article?.category }}</p>
+    <img *ngIf="article.image_data" 
+         [src]="'data:' + article?.image_media_type + ';base64,' + article?.image_data" 
+         alt="{{ article?.title}}" 
+         class="img-fluid mb-4" />
+    <p><strong>Abstract:</strong> {{ article?.abstract }}</p>
+    
+    <!-- Article body is rendered as HTML -->
+    <div [innerHTML]="article?.body"></div>
+  
+    <p class="text-muted">
+      <strong>Last modified:</strong> {{ article?.update_date }} <br />
+      <strong>Modified by:</strong> {{ article?.id}}
+    </p>
+  </div>
+  
+  <ng-template #loading>
+    <p *ngIf="errorMessage">{{ errorMessage }}</p>
+    <p *ngIf="!errorMessage">Loading article details...</p>
+  </ng-template>
+  
