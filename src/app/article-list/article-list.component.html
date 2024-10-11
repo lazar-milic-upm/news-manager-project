@@ -19,7 +19,7 @@
             </li>
         </ul>
         <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search articles..." [(ngModel)]="searchText" (ngModelChange)="onSearchChange($event)"/>
+          <input class="form-control me-2" type="search" placeholder="Search articles..." [(ngModel)]="searchText" name="searchText" (ngModelChange)="onSearchChange($event)"/>
         </form>
       </div>
     </nav>
