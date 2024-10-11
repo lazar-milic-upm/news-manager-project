@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NgFor,NgIf } from '@angular/common';
-import { Article } from '../interfaces/article'
+import { NgFor, NgIf } from '@angular/common';
+import { Article } from '../interfaces/article';
 import { NewsService } from '../services/news-service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -21,7 +21,7 @@ export class ArticleListComponent implements OnInit{
   articles: Article[] = [];
   article: Article | null | undefined;
   isLoading = true;
-  error: string | null | undefined;
+  error: string | null = null;
   category: string = 'All';
   searchText: string = '';
 
@@ -32,11 +32,12 @@ export class ArticleListComponent implements OnInit{
       next: (data) => {
         this.articles = data;
         this.isLoading = false;
-        console.log('getArticles(): ' + JSON.stringify(this.articles));
+        console.log('Fetched articles:', this.articles);
       },
       error: (err) => {
-        this.error = err;
+        this.error = 'Failed to load articles. Please try again later.';
         this.isLoading = false;
+        console.error('Error fetching articles:', err);
       },
     });
   }
@@ -47,5 +48,12 @@ export class ArticleListComponent implements OnInit{
 
   setCategory(category: string): void {
     this.category = category;
+    console.log('Selected category:', this.category);
   }
+
+  onSearchChange(value: string) {
+    console.log('Search Text Updated:', value);
+    this.searchText = value;
+  }
+  
 }

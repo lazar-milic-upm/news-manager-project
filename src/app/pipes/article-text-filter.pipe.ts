@@ -3,7 +3,7 @@ import { Article } from '../interfaces/article';
 
 @Pipe({
   name: 'articleTextFilter',
-  standalone: true
+  standalone: true,
 })
 export class ArticleTextFilterPipe implements PipeTransform {
   transform(articles: Article[], searchText: string): Article[] {
@@ -11,10 +11,11 @@ export class ArticleTextFilterPipe implements PipeTransform {
       return articles;
     }
 
-    // Filter articles by title or subtitle based on search text
+    const lowerCaseSearchText = searchText.toLowerCase();
+
     return articles.filter(article =>
-      article.title.toLowerCase().includes(searchText.toLowerCase()) ||
-      article.subtitle.toLowerCase().includes(searchText.toLowerCase())
+      article.title.toLowerCase().includes(lowerCaseSearchText) ||
+      article.subtitle.toLowerCase().includes(lowerCaseSearchText)
     );
   }
 }

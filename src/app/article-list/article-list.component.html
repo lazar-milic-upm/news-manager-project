@@ -2,24 +2,24 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" href="#" (click)="setCategory('All')">All</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#" (click)="setCategory('National')">National</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#" (click)="setCategory('Economy')">Economy</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#" (click)="setCategory('Sports')">Sports</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#" (click)="setCategory('Technology')">Technology</a>
-          </li>
+            <li class="nav-item">
+                <button class="nav-link" (click)="setCategory('All')">All</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" (click)="setCategory('National')">National</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" (click)="setCategory('Economy')">Economy</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" (click)="setCategory('Sports')">Sports</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" (click)="setCategory('Technology')">Technology</button>
+            </li>
         </ul>
         <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search articles..." [(ngModel)]="searchText" />
+          <input class="form-control me-2" type="search" placeholder="Search articles..." [(ngModel)]="searchText" (ngModelChange)="onSearchChange($event)"/>
         </form>
       </div>
     </nav>

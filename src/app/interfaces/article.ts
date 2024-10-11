@@ -1,5 +1,3 @@
-import { Data } from "@angular/router";
-
 export interface Article {
     id: number;
     title: string;
