@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { ArticleCategoryFilterPipe } from '../pipes/article-category-filter.pipe';
 import { ArticleTextFilterPipe } from '../pipes/article-text-filter.pipe';
 import { LoginService } from '../services/login.service';
+import { User } from '../interfaces/user';
 
 
 @Component({
@@ -26,11 +27,16 @@ export class ArticleListComponent implements OnInit{
   category: string = 'All';
   searchText: string = '';
   isLoggedIn: boolean = false;
+  username: string | null | undefined;
 
   constructor(private newsService: NewsService, private router: Router, public loginService: LoginService) {}
 
   ngOnInit(): void {
     this.isLoggedIn = this.loginService.isLogged();
+
+    if(this.isLoggedIn){
+      this.username = this.loginService.getUser()?.username;
+    }
 
     this.newsService.getArticles().subscribe({
       next: (data) => {

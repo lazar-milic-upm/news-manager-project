@@ -1,10 +1,10 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import * as _ from 'lodash';
 import { Article } from '../interfaces/article';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NewsService } from '../services/news-service';
-
+import { LoginService } from '../services/login.service';
+import * as _ from 'lodash';
 @Component({
   selector: 'app-article-detail',
   standalone: true,
@@ -15,12 +15,12 @@ import { NewsService } from '../services/news-service';
 export class ArticleDetailComponent {
     article: Article | null | undefined;
     articleId: string | null | undefined;
+    isLoggedIn: boolean = false;
 
-    constructor(private route: ActivatedRoute, private newsService: NewsService) {}
+    constructor(private route: ActivatedRoute, private newsService: NewsService, private loginService: LoginService) {}
 
     ngOnInit(): void {
         this.articleId = String(this.route.snapshot.paramMap.get('id'));
-
         if(this.articleId){
             this.newsService.getArticle(this.articleId).subscribe({
                 next: (data) => {
@@ -31,5 +31,7 @@ export class ArticleDetailComponent {
                 },
             });
         }
+
+        this.isLoggedIn = this.loginService.isLogged();
     }
 }

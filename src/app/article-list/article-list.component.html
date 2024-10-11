@@ -10,7 +10,7 @@
                 <button class="btn btn-link text-primary" (click)="login()">Log in</button>
             </div>
             <div *ngIf="isLoggedIn">
-                <span>Welcome, {{ loginService.getUser()?.name }}</span>
+                <span>Welcome, {{ username }}</span>
                 <button class="btn btn-link text-primary" (click)="logout()">Log out</button>
             </div>
           </div>
