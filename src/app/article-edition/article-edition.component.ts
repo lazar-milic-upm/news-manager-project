@@ -4,6 +4,7 @@ import { Article } from '../interfaces/article';
 import { NewsService } from '../services/news-service';
 import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf } from '@angular/common';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-article-edition',
@@ -32,7 +33,8 @@ export class ArticleEditionComponent implements OnInit {
   constructor(
     private newsService: NewsService, 
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -59,46 +61,36 @@ export class ArticleEditionComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.article.title && this.article.subtitle && this.article.abstract && this.article.category) {
-      this.loading = true;
-      if (this.isEditing) {
-        this.article.modifiedDate = new Date();
+    if (this.article) {
+        console.log('Article to be updated:', this.article);
         this.newsService.updateArticle(this.article).subscribe({
-          next: () => {
-            this.feedbackMessage = 'Article updated successfully!';
-            this.loading = false;
-            this.router.navigate(['/home']);
-          },
-          error: err => {
-            this.feedbackMessage = 'An error occurred while updating the article.';
-            this.loading = false;
-            console.error(err);
-          }
+            next: (updatedArticle) => {
+                if (updatedArticle) {
+                    this.feedbackMessage = 'Article updated successfully!';
+                    this.loading = false;
+                    this.router.navigate(['/article-details', updatedArticle.id]); // Navigate to article details
+                } else {
+                    this.feedbackMessage = 'Failed to update article.';
+                    this.loading = false;
+                }
+            },
+            error: err => {
+                this.feedbackMessage = 'An error occurred while updating the article.';
+                this.loading = false;
+                console.error('Update error:', err);
+            }
         });
-      } else {
-        this.article.update_date = new Date();
-        this.newsService.createArticle(this.article).subscribe({
-          next: () => {
-            this.feedbackMessage = 'Article created successfully!';
-            this.loading = false;
-            this.router.navigate(['/home']);
-          },
-          error: err => {
-            this.feedbackMessage = 'An error occurred while creating the article.';
-            this.loading = false;
-            console.error(err);
-          }
-        });
-      }
     } else {
-      this.feedbackMessage = 'Please fill in all the required fields!';
+        this.feedbackMessage = 'Invalid article data.';
     }
   }
 
-  goBack() {
-    this.router.navigate(['..']);
-  }
 
+  
+  goBack() {
+    this.location.back();
+  }
+  
   onFileSelect(event: any) {
     const file = event.target.files[0];
     if (file) {

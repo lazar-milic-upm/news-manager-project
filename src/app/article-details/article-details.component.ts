@@ -45,7 +45,6 @@ export class ArticleDetailsComponent implements OnInit {
     return this.loginService.isLogged();
   }
 
-
   editArticle(): void {
     if (this.article) {
         console.log('Navigating to edit article with ID:', this.article.id);

@@ -88,10 +88,17 @@ export class NewsService {
 
   }
 
-  updateArticle(article: Article): Observable<Article> {
+  updateArticle(article: Article): Observable<Article | null> {
     console.log('Updating article id=' + article.id);
-    return this.http.put<Article>(`${this.articleUrl}/${article.id}`, article, this.httpOptions).pipe();
+    return this.http.put<Article>(`${this.articleUrl}/${article.id}`, article, this.httpOptions).pipe(
+        tap(updatedArticle => console.log('Update successful:', updatedArticle)),
+        catchError(err => {
+            console.error('Update failed:', err);
+            return of(null);
+        })
+    );
 }
+
 
   createArticle(article: Article): Observable<Article> {
     console.log('Creating article');
