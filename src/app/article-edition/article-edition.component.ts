@@ -22,10 +22,12 @@ export class ArticleEditionComponent implements OnInit {
     update_date: new Date(),
     modifiedDate: new Date(),
     category: '', 
+    image_data: '' 
   };
   categories: string[] = ['National', 'Economy', 'Sports', 'Technology'];
   isEditing: boolean = false;
   feedbackMessage: string | null = null;
+  loading: boolean = false;
 
   constructor(
     private newsService: NewsService, 
@@ -42,22 +44,50 @@ export class ArticleEditionComponent implements OnInit {
   }
 
   loadArticle(id: string) {
-    this.newsService.getArticle(id).subscribe(article => {
-      this.article = article;
+    this.loading = true;
+    this.newsService.getArticle(id).subscribe({
+      next: article => {
+        this.article = article;
+        this.loading = false;
+      },
+      error: err => {
+        this.feedbackMessage = 'Error loading article.';
+        this.loading = false;
+        console.error(err);
+      }
     });
   }
 
   onSubmit() {
     if (this.article.title && this.article.subtitle && this.article.abstract && this.article.category) {
+      this.loading = true;
       if (this.isEditing) {
-        this.article.modifiedDate = new Date();  // Set modified date
-        this.newsService.updateArticle(this.article).subscribe(() => {
-          this.feedbackMessage = 'Article updated successfully!';
+        this.article.modifiedDate = new Date();
+        this.newsService.updateArticle(this.article).subscribe({
+          next: () => {
+            this.feedbackMessage = 'Article updated successfully!';
+            this.loading = false;
+            this.router.navigate(['/home']);
+          },
+          error: err => {
+            this.feedbackMessage = 'An error occurred while updating the article.';
+            this.loading = false;
+            console.error(err);
+          }
         });
       } else {
-        this.article.update_date = new Date();  // Set creation date for new article
-        this.newsService.createArticle(this.article).subscribe(() => {
-          this.feedbackMessage = 'Article created successfully!';
+        this.article.update_date = new Date();
+        this.newsService.createArticle(this.article).subscribe({
+          next: () => {
+            this.feedbackMessage = 'Article created successfully!';
+            this.loading = false;
+            this.router.navigate(['/home']);
+          },
+          error: err => {
+            this.feedbackMessage = 'An error occurred while creating the article.';
+            this.loading = false;
+            console.error(err);
+          }
         });
       }
     } else {
@@ -66,7 +96,7 @@ export class ArticleEditionComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/articles']);
+    this.router.navigate(['..']);
   }
 
   onFileSelect(event: any) {
@@ -74,7 +104,7 @@ export class ArticleEditionComponent implements OnInit {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.article.image_data = e.target.result; // Base64 encoding of the image
+        this.article.image_data = e.target.result;
       };
       reader.readAsDataURL(file);
     }

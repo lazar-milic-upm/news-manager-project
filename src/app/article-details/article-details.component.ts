@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NewsService } from '../services/news-service';
+import { LoginService } from '../services/login.service';
 import { Article } from '../interfaces/article';
 import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf } from '@angular/common';
-import { CommonModule } from '@angular/common';  // Import CommonModule
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-article-details',
   standalone: true,
-  imports: [FormsModule, NgFor, NgIf, CommonModule],  // Add CommonModule here
+  imports: [FormsModule, NgFor, NgIf, CommonModule],
   templateUrl: './article-details.component.html',
   styleUrls: ['./article-details.component.css'],
 })
@@ -17,7 +18,11 @@ export class ArticleDetailsComponent implements OnInit {
   article: Article | undefined;
   errorMessage: string | null = null;
 
-  constructor(private route: ActivatedRoute, private newsService: NewsService, private router: Router) {}
+  constructor(
+    private route: ActivatedRoute,
+    private newsService: NewsService,
+    private router: Router,
+    private loginService: LoginService) {}
 
   ngOnInit(): void {
     const articleId = this.route.snapshot.paramMap.get('id');
@@ -37,12 +42,15 @@ export class ArticleDetailsComponent implements OnInit {
   }
 
   isLoggedIn(): boolean {
-    return true;
+    return this.loginService.isLogged();
   }
+
 
   editArticle(): void {
     if (this.article) {
-      this.router.navigate(['/edit-article', this.article.id]);
+        console.log('Navigating to edit article with ID:', this.article.id);
+        this.router.navigate(['/article-edition', this.article.id]);
     }
   }
+
 }

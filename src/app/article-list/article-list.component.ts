@@ -53,7 +53,7 @@ export class ArticleListComponent implements OnInit{
   }
 
   navigateToArticle(articleId: number) {
-    this.router.navigate(['/article-detail', articleId]);
+    this.router.navigate(['/article-details', articleId]);
   }
 
   setCategory(category: string): void {
