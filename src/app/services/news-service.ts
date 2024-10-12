@@ -90,12 +90,11 @@ export class NewsService {
 
   updateArticle(article: Article): Observable<Article> {
     console.log('Updating article id=' + article.id);
-    return this.http.post<Article>(this.articleUrl, article, this.httpOptions);
-  }
+    return this.http.put<Article>(`${this.articleUrl}/${article.id}`, article, this.httpOptions).pipe();
+}
 
   createArticle(article: Article): Observable<Article> {
     console.log('Creating article');
-    console.log(article);
-    return this.http.post<Article>(this.articleUrl, article, this.httpOptions);
+    return this.http.post<Article>(this.articleUrl, article, this.httpOptions).pipe();
   }
 }
