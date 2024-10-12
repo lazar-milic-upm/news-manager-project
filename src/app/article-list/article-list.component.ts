@@ -75,5 +75,9 @@ export class ArticleListComponent implements OnInit{
   login() {
     this.router.navigate(['/login']);
   }
+
+  navigateToCreateArticle() {
+    this.router.navigate(['/article-create']);
+  }
   
 }
