@@ -13,7 +13,7 @@
 
   <p class="text-muted">
     <strong>Last modified:</strong> {{ article.update_date | date: 'medium' }} <br />
-    <strong>Modified by:</strong> {{ article.id }}
+    <strong>Modified by:</strong> {{ article.username }}
   </p>
   
   <button *ngIf="isLoggedIn()" (click)="editArticle()" class="btn btn-primary">Edit Article</button>

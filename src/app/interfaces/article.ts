@@ -10,4 +10,5 @@ export interface Article {
     category: string;
     image_data?: string;         
     image_media_type?: string;
+    username: string;
 }

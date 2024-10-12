@@ -23,7 +23,8 @@ export class ArticleEditionComponent implements OnInit {
     update_date: new Date(),
     modifiedDate: new Date(),
     category: '', 
-    image_data: '' 
+    image_data: '',
+    username: ''
   };
   categories: string[] = ['National', 'Economy', 'Sports', 'Technology'];
   isEditing: boolean = false;
