@@ -11,4 +11,5 @@ export interface Article {
     image_data?: string;         
     image_media_type?: string;
     username: string;
+    thumbnail_image: string;
 }

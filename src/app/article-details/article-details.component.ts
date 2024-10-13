@@ -4,8 +4,7 @@ import { NewsService } from '../services/news-service';
 import { LoginService } from '../services/login.service';
 import { Article } from '../interfaces/article';
 import { FormsModule } from '@angular/forms';
-import { NgFor, NgIf } from '@angular/common';
-import { CommonModule } from '@angular/common';
+import { NgFor, NgIf, Location, CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-article-details',
@@ -22,6 +21,7 @@ export class ArticleDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private newsService: NewsService,
     private router: Router,
+    private location: Location,
     private loginService: LoginService) {}
 
   ngOnInit(): void {
@@ -43,6 +43,10 @@ export class ArticleDetailsComponent implements OnInit {
 
   isLoggedIn(): boolean {
     return this.loginService.isLogged();
+  }
+
+  goBack() {
+    this.location.back();
   }
 
   editArticle(): void {

@@ -24,7 +24,8 @@ export class ArticleEditionComponent implements OnInit {
     modifiedDate: new Date(),
     category: '', 
     image_data: '',
-    username: ''
+    username: '',
+    thumbnail_image: ''
   };
   categories: string[] = ['National', 'Economy', 'Sports', 'Technology'];
   isEditing: boolean = false;

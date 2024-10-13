@@ -26,17 +26,14 @@ export class ArticleListComponent implements OnInit{
   error: string | null = null;
   category: string = 'All';
   searchText: string = '';
-  isLoggedIn: boolean = false;
   username: string | null | undefined;
 
   constructor(private newsService: NewsService, private router: Router, public loginService: LoginService) {}
 
   ngOnInit(): void {
-    this.isLoggedIn = this.loginService.isLogged();
 
-    if(this.isLoggedIn){
+    if(this.isLoggedIn())
       this.username = this.loginService.getUser()?.username;
-    }
 
     this.newsService.getArticles().subscribe({
       next: (data) => {
@@ -50,6 +47,10 @@ export class ArticleListComponent implements OnInit{
         console.error('Error fetching articles:', err);
       },
     });
+  }
+
+  isLoggedIn(): boolean {
+    return this.loginService.isLogged();
   }
 
   navigateToArticle(articleId: number) {
@@ -68,7 +69,6 @@ export class ArticleListComponent implements OnInit{
 
   logout() {
     this.loginService.logout();
-    this.isLoggedIn = false;
     this.router.navigate(['/login']);
   }
 

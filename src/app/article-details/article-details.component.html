@@ -1,25 +1,26 @@
-<div class="container mt-4" *ngIf="article; else loading">
-  <h2>{{ article.title }}</h2> 
-  <h4>{{ article.subtitle }}</h4>
-  <p><strong>Category: </strong>{{ article.category }}</p> 
-  
-  <img *ngIf="article.image_data" [src]="'data:' + article.image_media_type + ';base64,' + article.image_data" 
-       alt="{{ article.title ? article.title : 'Article Image' }}" 
-       class="img-fluid mb-4" />
-       
-  <p><strong>Abstract:</strong> {{ article.abstract }}</p> 
-  
+<div class="container mt-4 pb-4" *ngIf="article; else loading">
+  <div class="text-center">
+    <h2>{{ article.title }}</h2> 
+    <h4>{{ article.subtitle }}</h4>
+    <p><strong>Category: </strong>{{ article.category }}</p> 
+    <img *ngIf="article.image_data" [src]="'data:' + article.image_media_type + ';base64,' + article.image_data"  alt="{{ article.title ? article.title : 'Article Image' }}"  class="img-fluid mb-4" />
+  </div>
+  <p><strong>Abstract:</strong> {{ article.abstract }}</p>
   <div [innerHTML]="article.body"></div>
 
-  <p class="text-muted">
+  <p class="text-muted pt-4">
     <strong>Last modified:</strong> {{ article.update_date | date: 'medium' }} <br />
     <strong>Modified by:</strong> {{ article.username }}
   </p>
   
-  <button *ngIf="isLoggedIn()" (click)="editArticle()" class="btn btn-primary">Edit Article</button>
+  <div class="d-flex justify-content-between pt-2 pb-3">
+    <button type="button" class="btn btn-secondary" (click)="goBack()">Back to Articles</button>
+    <button *ngIf="isLoggedIn()" (click)="editArticle()" class="btn btn-primary">Edit Article</button>
+  </div>
 </div>
 
+
 <ng-template #loading>
-  <p *ngIf="errorMessage">{{ errorMessage }}</p>
-  <p *ngIf="!errorMessage">Loading article details...</p>
+  <p class="text-center" *ngIf="errorMessage">{{ errorMessage }}</p>
+  <p class="text-center" *ngIf="!errorMessage">Loading article details...</p>
 </ng-template>
