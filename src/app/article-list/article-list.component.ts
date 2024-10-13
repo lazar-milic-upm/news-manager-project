@@ -79,5 +79,21 @@ export class ArticleListComponent implements OnInit{
   navigateToCreateArticle() {
     this.router.navigate(['/article-create']);
   }
+
+  //Remove article added here 
+  confirmAndRemoveArticle(articleId: number): void {
+    if (window.confirm('Are you sure you want to remove this article?')) {
+      this.newsService.deleteArticle(articleId).subscribe({
+        next: () => {
+          alert('Article removed successfully.');
+          this.articles = this.articles.filter(article => article.id !== articleId);
+        },
+        error: (err) => {
+          alert('Failed to remove article. Please try again.');
+          console.error('Error removing article:', err);
+        }
+      });
+    }
+  }
   
 }
