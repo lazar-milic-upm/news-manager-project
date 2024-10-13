@@ -56,4 +56,19 @@ export class ArticleDetailsComponent implements OnInit {
     }
   }
 
+  confirmAndRemoveArticle(): void {
+    if (this.article && window.confirm('Are you sure you want to remove this article?')) {
+      this.newsService.deleteArticle(this.article.id).subscribe({
+        next: () => {
+          alert('Article removed successfully.');
+          this.router.navigate(['/articles']);
+        },
+        error: (err) => {
+          alert('Failed to remove article. Please try again.');
+          console.error('Error removing article:', err);
+        }
+      });
+    }
+  }
+
 }
