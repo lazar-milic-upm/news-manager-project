@@ -5,17 +5,19 @@ import { LoginService } from '../services/login.service';
 import { Article } from '../interfaces/article';
 import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf, Location, CommonModule } from '@angular/common';
+import { HeaderComponent } from '../header/header.component';
 
 @Component({
   selector: 'app-article-details',
   standalone: true,
-  imports: [FormsModule, NgFor, NgIf, CommonModule],
+  imports: [FormsModule, NgFor, NgIf, CommonModule, HeaderComponent],
   templateUrl: './article-details.component.html',
   styleUrls: ['./article-details.component.css'],
 })
 export class ArticleDetailsComponent implements OnInit {
   article: Article | undefined;
   errorMessage: string | null = null;
+  username: string | null | undefined;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,6 +27,8 @@ export class ArticleDetailsComponent implements OnInit {
     private loginService: LoginService) {}
 
   ngOnInit(): void {
+    if(this.isLoggedIn())
+      this.username = this.loginService.getUser()?.username;
     const articleId = this.route.snapshot.paramMap.get('id');
     if (articleId) {
       this.newsService.getArticle(articleId).subscribe({
@@ -46,7 +50,7 @@ export class ArticleDetailsComponent implements OnInit {
   }
 
   goBackToArticles() {
-    this.router.navigate(['/article-list']);
+    this.router.navigate(['/home']);
   }
 
   editArticle(): void {
@@ -56,12 +60,12 @@ export class ArticleDetailsComponent implements OnInit {
     }
   }
 
-  confirmAndRemoveArticle(): void {
-    if (this.article && window.confirm('Are you sure you want to remove this article?')) {
-      this.newsService.deleteArticle(this.article.id).subscribe({
+  //Remove article added here 
+  confirmAndRemoveArticle(articleId: string): void {
+    if (window.confirm('Are you sure you want to remove this article?')) {
+      this.newsService.deleteArticle(articleId).subscribe({
         next: () => {
           alert('Article removed successfully.');
-          this.router.navigate(['/articles']);
         },
         error: (err) => {
           alert('Failed to remove article. Please try again.');
@@ -69,6 +73,15 @@ export class ArticleDetailsComponent implements OnInit {
         }
       });
     }
+  }
+
+  logout() {
+    this.loginService.logout();
+    this.router.navigate(['/login']);
+  }
+
+  login() {
+    this.router.navigate(['/login']);
   }
 
 }

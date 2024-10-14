@@ -62,7 +62,7 @@ export class NewsService {
     return this.http.get<Article[]>(this.newsUrl, this.httpOptions);
   }
 
-  deleteArticle(articleId: number): Observable<void> {
+  deleteArticle(articleId: string): Observable<void> {
     const url = `${this.articleUrl}/${articleId}`;
     return this.http.delete<void>(url, this.httpOptions);
   }

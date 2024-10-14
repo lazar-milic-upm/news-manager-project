@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf,CommonModule } from '@angular/common';
 import { Article } from '../interfaces/article';
 import { NewsService } from '../services/news-service';
 import { Router } from '@angular/router';
@@ -7,13 +7,13 @@ import { FormsModule } from '@angular/forms';
 import { ArticleCategoryFilterPipe } from '../pipes/article-category-filter.pipe';
 import { ArticleTextFilterPipe } from '../pipes/article-text-filter.pipe';
 import { LoginService } from '../services/login.service';
-import { User } from '../interfaces/user';
+import { HeaderComponent } from "../header/header.component";
 
-
+declare var bootstrap: any;
 @Component({
   selector: 'app-article-list',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule, ArticleCategoryFilterPipe, ArticleTextFilterPipe],
+  imports: [HeaderComponent, NgFor, NgIf, FormsModule, ArticleCategoryFilterPipe, ArticleTextFilterPipe, CommonModule ],
   templateUrl: './article-list.component.html',
   styleUrls: ['./article-list.component.css']
 })
@@ -21,12 +21,13 @@ import { User } from '../interfaces/user';
 export class ArticleListComponent implements OnInit{
 
   articles: Article[] = [];
-  article: Article | null | undefined;
+  article: Article | undefined;
   isLoading = true;
   error: string | null = null;
   category: string = 'All';
   searchText: string = '';
   username: string | null | undefined;
+  selectedPill: string = 'All'; // Default tab
 
   constructor(private newsService: NewsService, private router: Router, public loginService: LoginService) {}
 
@@ -81,7 +82,7 @@ export class ArticleListComponent implements OnInit{
   }
 
   //Remove article added here 
-  confirmAndRemoveArticle(articleId: number): void {
+  confirmAndRemoveArticle(articleId: string): void {
     if (window.confirm('Are you sure you want to remove this article?')) {
       this.newsService.deleteArticle(articleId).subscribe({
         next: () => {
@@ -95,5 +96,12 @@ export class ArticleListComponent implements OnInit{
       });
     }
   }
+
+  // Method to select a pill programmatically
+  selectPill(pill: string): void {
+    this.selectedPill = pill; 
+    this.setCategory(pill);
+  }
+  
   
 }

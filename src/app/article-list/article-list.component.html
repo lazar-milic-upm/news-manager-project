@@ -1,49 +1,34 @@
-<body>
-    <div class="">
-      <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-2 border-bottom bg-light">
-        <div class="col-md-3 mb-2 mb-md-0"></div>
-        <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-          <li><a href="/" class="nav-link px-2"><h1 class="navbar-title">EIT Newspaper</h1></a></li>
-        </ul>
-        <div class="col-md-3 text-end mx-5">
-          <div *ngIf="!isLoggedIn()">
-            <button class="btn btn-outline-primary" (click)="login()">Log in</button>
-          </div>
-          <div class="d-flex align-items-center justify-content-center" *ngIf="isLoggedIn()">
-            <span class="mx-4">Welcome, {{ username }}</span>
-            <button class="btn btn-outline-primary" (click)="logout()">Log out</button>
-          </div>
-        </div>
-      </header>
-    </div>
-    <nav class="navbar navbar-expand-lg navbar-light ">
+
+<app-header></app-header>
+    <nav class="navbar navbar-expand-lg navbar-light pt-5">
         <div class="container">
-            <ul class="ms-5 navbar-nav me-auto mb-2 mb-lg-0 ">
-                <li class="nav-item">
-                    <button class="nav-link" (click)="setCategory('All')" aria-selected="true">All</button>
+            <ul class="ms-5 nav nav-pills me-auto mb-2 mb-lg-0 " id="pillsTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" [ngClass]="{'active': selectedPill === 'All'}" id="All" data-bs-toggle="tab" data-bs-target="#pills-all" role="tab" aria-controls="pills-all" aria-selected="true" (click)="selectPill('All')">All</button>
                 </li>
-                <li class="nav-item">
-                    <button class="nav-link" (click)="setCategory('National')">National</button>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" [ngClass]="{'active': selectedPill === 'National'}" id="National" data-bs-toggle="tab" data-bs-target="#pills-national" role="tab" aria-controls="pills-national" aria-selected="false" (click)="selectPill('National')">National</button>
                 </li>
-                <li class="nav-item">
-                    <button class="nav-link" (click)="setCategory('Economy')">Economy</button>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link"[ngClass]="{'active': selectedPill === 'Economy'}" id="Economy" data-bs-toggle="tab" data-bs-target="#pills-national" role="tab" aria-controls="pills-national" aria-selected="false" (click)="selectPill('Economy')">Economy</button>
                 </li>
-                <li class="nav-item">
-                    <button class="nav-link" (click)="setCategory('Sports')">Sports</button>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link"[ngClass]="{'active': selectedPill === 'Sports'}" id="Sports" data-bs-toggle="tab" data-bs-target="#pills-national" role="tab" aria-controls="pills-national" aria-selected="false" (click)="selectPill('Sports')">Sports</button>
                 </li>
-                <li class="nav-item">
-                    <button class="nav-link" (click)="setCategory('Technology')">Technology</button>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link"[ngClass]="{'active': selectedPill === 'Technology'}" id="Technology" data-bs-toggle="tab" data-bs-target="#pills-national" role="tab" aria-controls="pills-national" aria-selected="false" (click)="selectPill('Technology')">Technology</button>
                 </li>
             </ul>
-            <form class="mx-5">
+            <form class="mx-4">
               <input class="form-control me-2" type="search" placeholder="Search articles..." [(ngModel)]="searchText" name="searchText" (ngModelChange)="onSearchChange($event)"/>
             </form>
-            <button *ngIf="isLoggedIn()" class="btn btn-primary" (click)="navigateToCreateArticle()">Create Article</button>
+              <button *ngIf="isLoggedIn()" class="btn btn-primary btnCreateArticle" (click)="navigateToCreateArticle()">Create Article</button>
+            
         </div>
     </nav>
   
-    <div class="container mt-4 pt-4">
-        <div class="row">
+    <div *ngIf="!isLoading; else loading"  class="container mt-4 pt-4">
+        <div  class="row">
             <div *ngFor="let article of articles | articleCategoryFilter: category | articleTextFilter: searchText" class="col-md-4 mb-4">
                 <div class="card h-100 shadow-sm text-center">
                     <img *ngIf="article.thumbnail_image" [src]="'data:' + article.image_media_type + ';base64,' + article.thumbnail_image"  alt="{{ article.title ? article.title : 'Article Image' }}"  class="card-img-top"/>
@@ -52,18 +37,22 @@
                         <p class="card-text">{{ article.subtitle }}</p>
                     </div>
                     <div class="card-footer text-center bg-transparent border-top-0">
-                        <button class="btn btn-success mb-3" (click)="navigateToArticle(article.id)">Read More</button>
+                        <button class="btn btn-success mb-3 mx-1" (click)="navigateToArticle(article.id)">Read More</button>
+                        <button *ngIf="isLoggedIn()" class="btn btn-danger mb-3" (click)="confirmAndRemoveArticle(article.id)">Remove</button>
                     </div>
                 </div>
             </div>
-            <div class="card-footer text-center bg-transparent border-top-0">
-              <button class="btn btn-primary mb-3" (click)="navigateToArticle(article.id)">Read More</button>
-              <button *ngIf="isLoggedIn()" class="btn btn-danger mb-3" (click)="confirmAndRemoveArticle(article.id)">Remove</button> <!-- Remove button added here -->
-            </div>
           </div>
         </div>
-  </body>
   
+  <ng-template #loading>
+    <div class="d-flex justify-content-center">
+      <div class="alert alert-primary mt-5 w-25 text-center">Loading articles list...</div>
+    </div>
+  </ng-template>
+
   <footer class="text-center mt-5">
       <p>News-Manager-Project by Gaia, Pardis and Lazar</p>
   </footer> 
+
+  <script src="/docs/5.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
