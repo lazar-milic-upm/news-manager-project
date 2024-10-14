@@ -1,37 +1,45 @@
 <div class="container mt-5">
     <h2>{{ isEditing ? 'Edit Article' : 'Create New Article' }}</h2>
 
-    <form (ngSubmit)="onSubmit()" #articleForm="ngForm">
+    <form (ngSubmit)="onSubmit()" [formGroup]="articleForm" class="mt-5">
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
-            <input type="text" id="title" class="form-control" [(ngModel)]="article['title']" name="title" required />
-            <div *ngIf="articleForm.submitted && !articleForm.controls['title']?.valid" class="text-danger">Title is required</div>
+            <input type="text" id="title" class="form-control" formControlName="title" name="title" value="{{article.title}}" placeholder="Article title">
+            <div class="invalid-feedback" *ngIf="articleForm.get('title')?.invalid && articleForm.get('title')?.touched">
+                <small *ngIf="articleForm.get('from')?.errors?.['required']">Title is required.</small>
+            </div>
         </div>
 
         <div class="mb-3">
             <label for="subtitle" class="form-label">Subtitle</label>
-            <input type="text" id="subtitle" class="form-control" [(ngModel)]="article['subtitle']" name="subtitle" required />
-            <div *ngIf="articleForm.submitted && !articleForm.controls['subtitle']?.valid" class="text-danger">Subtitle is required</div>
+            <input type="text" id="subtitle" class="form-control" formControlName="subtitle" name="subtitle" value="{{article.title}}" placeholder="Article subtitle" />
+            <div class="invalid-feedback" *ngIf="articleForm.get('subtitle')?.invalid && articleForm.get('subtitle')?.touched">
+                <small *ngIf="articleForm.get('subtitle')?.errors?.['required']">Subtitle is required.</small>
+            </div>
         </div>
 
         <div class="mb-3">
             <label for="abstract" class="form-label">Abstract</label>
-            <textarea id="abstract" class="form-control" [(ngModel)]="article['abstract']" name="abstract" required></textarea>
-            <div *ngIf="articleForm.submitted && !articleForm.controls['abstract']?.valid" class="text-danger">Abstract is required</div>
+            <textarea id="abstract" class="form-control" formControlName="abstract" name="abstract" value="{{article.title}}" placeholder="Article abstract"></textarea>
+            <div class="invalid-feedback" *ngIf="articleForm.get('abstract')?.invalid && articleForm.get('abstract')?.touched">
+                <small *ngIf="articleForm.get('abstract')?.errors?.['required']">Abstract is required.</small>
+            </div>
         </div>
 
         <div class="mb-3">
             <label for="category" class="form-label">Category</label>
-            <select id="category" class="form-select" [(ngModel)]="article['category']" name="category" required>
+            <select id="category" class="form-select" formControlName="category"  value="{{article.category}}" name="category">
                 <option value="">Select a category</option>
                 <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
             </select>
-            <div *ngIf="articleForm.submitted && !articleForm.controls['category']?.valid" class="text-danger">Category is required</div>
+            <div class="invalid-feedback" *ngIf="articleForm.get('category')?.invalid && articleForm.get('category')?.touched">
+                <small *ngIf="articleForm.get('category')?.errors?.['required']">Category is required.</small>
+            </div>
         </div>
 
         <div class="mb-3">
             <label for="body" class="form-label">Body</label>
-            <editor [(ngModel)]="article['body']" name="body"></editor>
+            <quill-editor class="w-100" formControlName="body" name="body" placeholder="Article body" [(ngModel)]="article.body"></quill-editor>
         </div>
 
         <div class="mb-3">
@@ -39,11 +47,18 @@
             <input type="file" id="image" (change)="onFileSelect($event)" class="form-control" />
         </div>
 
-        <div class="d-flex justify-content-between">
-            <button type="button" class="btn btn-secondary" (click)="goBack()">Back to Articles</button>
+        <div class="d-flex justify-content-between mt-5">
+
+            <button type="button" class="btn btn-danger" (click)="deleteArticle(this.article.id)">Delete article</button>
             <button type="submit" class="btn btn-primary">{{ isEditing ? 'Save Changes' : 'Create Article' }}</button>
         </div>
 
-        <div *ngIf="feedbackMessage" class="alert alert-success mt-3">{{ feedbackMessage }}</div>
+        <div class="d-flex justify-content-center">
+            <div *ngIf="feedbackMessage" class="alert alert-danger mt-5 w-25 text-center">{{ feedbackMessage }}</div>
+        </div>
     </form>
 </div>
+
+<footer class="text-center mt-5">
+    <p>News-Manager-Project by Gaia, Pardis and Lazar</p>
+</footer> 

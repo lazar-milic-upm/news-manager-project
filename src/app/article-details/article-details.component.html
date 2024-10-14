@@ -11,19 +11,19 @@
     <!-- Article body is rendered as HTML -->
     <div [innerHTML]="article?.body"></div>
   
-    <p class="text-muted">
-      <strong>Last modified:</strong> {{ article?.update_date }} <br />
-      <strong>Modified by:</strong> {{ article?.id}}
-    </p>
+  <div class="d-flex justify-content-between pt-5 pb-5">
+    <button type="button" class="btn btn-secondary" (click)="goBackToArticles()">Back to Articles</button>
+    <button *ngIf="isLoggedIn()" (click)="editArticle()" class="btn btn-primary">Edit Article</button>
   </div>
-  
-  <!-- Article Removal -->
-  <div class="text-end mt-3">
-    <button *ngIf="isLoggedIn()" class="btn btn-danger" (click)="confirmAndRemoveArticle()">Remove Article</button> 
+</div>
+
+<ng-template #loading>
+  <div class="d-flex justify-content-center">
+    <div *ngIf="errorMessage" class="alert alert-danger mt-5 w-25 text-center">{{ errorMessage }}</div>
+    <div *ngIf="!errorMessage" class="alert alert-primary mt-5 w-25 text-center">Loading article details...</div>
   </div>
-  
-  <ng-template #loading>
-    <p *ngIf="errorMessage">{{ errorMessage }}</p>
-    <p *ngIf="!errorMessage">Loading article details...</p>
-  </ng-template>
-  
+</ng-template>
+
+<footer class="text-center mt-5">
+    <p>News-Manager-Project by Gaia, Pardis and Lazar</p>
+</footer> 

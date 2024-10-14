@@ -53,7 +53,7 @@ export class ArticleListComponent implements OnInit{
     return this.loginService.isLogged();
   }
 
-  navigateToArticle(articleId: number) {
+  navigateToArticle(articleId: string) {
     this.router.navigate(['/article-details', articleId]);
   }
 

@@ -45,8 +45,8 @@ export class ArticleDetailsComponent implements OnInit {
     return this.loginService.isLogged();
   }
 
-  goBack() {
-    this.location.back();
+  goBackToArticles() {
+    this.router.navigate(['/article-list']);
   }
 
   editArticle(): void {
