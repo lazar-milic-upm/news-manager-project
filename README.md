@@ -1,8 +1,16 @@
 # NewsManagerProject
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.4.
+This is a news manager project for the course EIT HCID - Programming of user interfaces.
+
+## Authors
+
+BASIRIJAHROMI PARDIS
+DE DONATIS GAIA
+MILIC LAZAR
 
 ## Development server
+
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.4.
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 

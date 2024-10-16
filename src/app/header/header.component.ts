@@ -5,11 +5,11 @@ import { Router } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-header',
-  standalone: true,
-  imports: [NgFor, NgIf],
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+    selector: 'app-header',
+    standalone: true,
+    imports: [NgFor, NgIf],
+    templateUrl: './header.component.html',
+    styleUrl: './header.component.css'
 })
 export class HeaderComponent implements OnInit{
 
@@ -19,22 +19,19 @@ export class HeaderComponent implements OnInit{
 
   ngOnInit(): void {
     if(this.isLoggedIn())
-      this.username = this.loginService.getUser()?.username;
-
+        this.username = this.loginService.getUser()?.username;
   }
 
   logout() {
-    this.loginService.logout();
-    this.router.navigate(['/login']);
+      this.loginService.logout();
+      this.router.navigate(['/login']);
   }
 
   login() {
-    this.router.navigate(['/login']);
+      this.router.navigate(['/login']);
   }
 
   isLoggedIn(): boolean {
-    return this.loginService.isLogged();
+      return this.loginService.isLogged();
   }
-
-
 }

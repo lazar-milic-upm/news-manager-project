@@ -30,7 +30,7 @@
         <div class="form-group mb-3">
             <label for="category" class="form-label">Category</label>
             <select id="category" required  class="form-select category" value="{{article ? article.category : ''}}" formControlName="category" name="category">
-                <option>Select a category</option>
+                <option selected disabled value="">Select a category...</option>
                 <option *ngFor="let category of categories" >{{ category }}</option>
             </select>
             <div class="invalid-feedback" *ngIf="articleForm.get('category')?.invalid && articleForm.get('category')?.touched">

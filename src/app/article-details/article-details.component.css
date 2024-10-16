@@ -25,3 +25,8 @@
     color: #6c757d;
   }
   
+  @media screen and (min-width: 1400px) {
+    .container {
+      width: 50%;
+    }
+  }
