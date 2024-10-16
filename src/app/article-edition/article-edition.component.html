@@ -29,9 +29,9 @@
 
         <div class="form-group mb-3">
             <label for="category" class="form-label">Category</label>
-            <select id="category" required  class="form-select category" formControlName="category"  value="{{article ? article.category : ''}}" name="category">
+            <select id="category" required  class="form-select category" value="{{article ? article.category : ''}}" formControlName="category" name="category">
                 <option>Select a category</option>
-                <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+                <option *ngFor="let category of categories" >{{ category }}</option>
             </select>
             <div class="invalid-feedback" *ngIf="articleForm.get('category')?.invalid && articleForm.get('category')?.touched">
                 <small *ngIf="articleForm.get('category')?.errors?.['required']">Category is required.</small>
@@ -40,18 +40,18 @@
 
         <div class="form-group mb-3 ">
             <label for="body" class="form-label">Body</label>
-            <quill-editor class="w-100" formControlName="body" name="body" placeholder="Article body" [(ngModel)]="article.body"></quill-editor>
+            <quill-editor class="w-100" formControlName="body" name="body" placeholder="Article body"></quill-editor>
         </div>
 
         <div class="form-group mb-3">
             <label for="image_data" class="form-label">Select Image</label>
-            <input type="file" formControlName="image_data" id="image_data" (change)="fileChangeEvent($event)" class="form-control" />
+            <input type="file" name="image_data" id="image_data" (change)="fileChangeEvent($event)"  placeholder="Upload an Image" class="form-control" />
         </div>
 
         <div *ngIf="isImageSaved" class="container text-center mt-4">
             <div class="row justify-content-center">
                 <div class="col-12 col-md-6">
-                    <img [src]="cardImageBase64" id="image-preview" alt="Image Preview" class="img-thumbnail" style="max-width: 300px;">
+                    <img [src]="'data:' + cardImageType + ';base64,' + cardImageBase64" id="image-preview" alt="Image Preview" class="img-thumbnail" style="max-width: 300px;">
                     <label for="image-preview "class="form-label text-center">Preview of the uploaded image</label>
                 </div>
             </div>

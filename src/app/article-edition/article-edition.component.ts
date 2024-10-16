@@ -41,7 +41,8 @@ export class ArticleEditionComponent implements OnInit {
   imageError: string | null = null;
   isImageSaved: boolean = false;
   cardImageBase64: string | null = null;
-  tempId:Number;
+  cardImageType: string | null | undefined;
+
   constructor(private newsService: NewsService, private loginService: LoginService,private router: Router, private route: ActivatedRoute, private location: Location, private fb: FormBuilder,) {
     this.articleForm = this.fb.group({
       title: ['', Validators.required],
@@ -55,11 +56,10 @@ export class ArticleEditionComponent implements OnInit {
       username: []
     });
     this.articleId='';
-    this.tempId = 9900;
+    this.cardImageType = '';
   }
 
   ngOnInit(): void {
-    this.tempId = 9900;
 
     if(this.isLoggedIn())
       this.username = this.loginService.getUser()?.username;
@@ -90,6 +90,14 @@ export class ArticleEditionComponent implements OnInit {
             if(this.username)
               this.article.username = this.username;
             this.loading = false;
+
+            if(this.article.image_data){
+              this.isImageSaved = true;
+              this.cardImageBase64 = this.article.image_data;
+              this.cardImageType = this.article.image_media_type;
+            }
+            else
+              this.isImageSaved = false;
         },
         error: err => {
             this.feedbackMessage = 'Error loading article.';
@@ -135,7 +143,8 @@ export class ArticleEditionComponent implements OnInit {
         }
         else{
             console.log('this.article: ' + this.article);
-            this.article.id = random(9900,10000).toString();
+            //this.article.id = random(9900,10000).toString();
+            this.article.id = null;
             this.newsService.createArticle(this.article).subscribe({
               next: (createdArticle) => {
                   if (createdArticle) {
@@ -197,10 +206,11 @@ export class ArticleEditionComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         const base64String = e.target.result;
-        this.cardImageBase64 = base64String; 
+        this.cardImageBase64 = base64String.split(',')[1]; 
         this.isImageSaved = true;
         
         this.article.image_media_type = fileInput.target.files[0].type;
+        this.cardImageType = fileInput.target.files[0].type;
         this.article.image_data = base64String.split(',')[1];  
         this.article.thumbnail_image = base64String.split(',')[1];  
       };
