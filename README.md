@@ -4,9 +4,7 @@ This is a news manager project for the course EIT HCID - Programming of user int
 
 ## Authors
 
-BASIRIJAHROMI PARDIS
-DE DONATIS GAIA
-MILIC LAZAR
+BASIRIJAHROMI PARDIS, DE DONATIS GAIA AND MILIC LAZAR
 
 ## Development server
 
