@@ -7,6 +7,7 @@ import { NgFor, NgIf, Location, CommonModule } from '@angular/common';
 import { QuillModule } from 'ngx-quill';
 import { LoginService } from '../services/login.service';
 import { HeaderComponent } from '../header/header.component';
+import _, { random } from 'lodash';
 
 @Component({
   selector: 'app-article-edition',
@@ -27,7 +28,8 @@ export class ArticleEditionComponent implements OnInit {
     category: '', 
     image_data: '',
     username: '',
-    thumbnail_image: ''
+    thumbnail_image: '',
+    image_media_type: ''
   };
   categories: string[] = ['National', 'Economy', 'Sports', 'Technology'];
   isEditing: boolean = false;
@@ -36,20 +38,29 @@ export class ArticleEditionComponent implements OnInit {
   articleForm: FormGroup;
   articleId: string | null;
   username: string | null | undefined;
-
+  imageError: string | null = null;
+  isImageSaved: boolean = false;
+  cardImageBase64: string | null = null;
+  tempId:Number;
   constructor(private newsService: NewsService, private loginService: LoginService,private router: Router, private route: ActivatedRoute, private location: Location, private fb: FormBuilder,) {
     this.articleForm = this.fb.group({
       title: ['', Validators.required],
       subtitle: ['', Validators.required],
       abstract: ['', Validators.required],
       category: ['', Validators.required],
-      body: [''],
-      image: [null]
+      image_media_type: [],
+      body: [],
+      image_data: [],
+      thumbnail_image: [],
+      username: []
     });
     this.articleId='';
+    this.tempId = 9900;
   }
 
   ngOnInit(): void {
+    this.tempId = 9900;
+
     if(this.isLoggedIn())
       this.username = this.loginService.getUser()?.username;
 
@@ -75,12 +86,9 @@ export class ArticleEditionComponent implements OnInit {
             this.article = article;
             console.log('article in load: ' + JSON.stringify(article));
             this.article.id = articleId;
-            this.articleForm.controls['title'].setValue(this.article.title);
-            this.articleForm.controls['subtitle'].setValue(this.article.subtitle);
-            this.articleForm.controls['abstract'].setValue(this.article.abstract);
-            this.articleForm.controls['category'].setValue(this.article.category);
-            this.articleForm.controls['image'].setValue(this.article.image_data);
-            this.articleForm.controls['thumbnail_image'].setValue(this.article.thumbnail_image);
+            this.articleForm.patchValue(article);
+            if(this.username)
+              this.article.username = this.username;
             this.loading = false;
         },
         error: err => {
@@ -92,11 +100,20 @@ export class ArticleEditionComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.articleForm.valid) {
-        if(this.isEditing && this.article && this.articleId){
-          this.article = this.articleForm.value;
+
+    if(this.username)
+      this.article.username = this.username;
+
+    if (this.articleForm.valid && this.article ) {
+      this.article.title=this.articleForm.value.title;
+      this.article.subtitle=this.articleForm.value.subtitle;
+      this.article.abstract=this.articleForm.value.abstract;
+      this.article.category=this.articleForm.value.category;
+      this.article.body=this.articleForm.value.body;
+
+        if(this.isEditing && this.articleId){
           this.article.id=this.articleId;
-          console.log('this.article in updateArticle: ' + JSON.stringify(this.article));
+          console.log('this.article in updateArticle: ' + JSON.stringify(this.articleForm.value));
           this.newsService.updateArticle(this.article).subscribe({
               next: (updatedArticle) => {
                   if (updatedArticle) {
@@ -117,34 +134,26 @@ export class ArticleEditionComponent implements OnInit {
           });
         }
         else{
-
-          /*this.article = {
-            title: this.articleForm.value.title,
-            subtitle: this.articleForm.value.subtitle,
-            abstract: this.articleForm.value.abstract,
-            category: this.articleForm.value.category,
-            body: this.articleForm.value.body
-          };*/
-
-          if(this.articleForm.valid){
-              this.newsService.createArticle(this.articleForm.value).subscribe({
-                next: (createdArticle) => {
-                    if (createdArticle) {
-                        this.feedbackMessage = 'Article created successfully!';
-                        this.loading = false;
-                        this.router.navigate(['/article-details', createdArticle.id]); // Navigate to article details
-                    } else {
-                        this.feedbackMessage = 'Failed to create article.';
-                        this.loading = false;
-                    }
-                },
-                error: err => {
-                    this.feedbackMessage = 'An error occurred while updating the article.';
-                    this.loading = false;
-                    console.error('Update error:', err);
-                }
-              });
-          }
+            console.log('this.article: ' + this.article);
+            this.article.id = random(9900,10000).toString();
+            this.newsService.createArticle(this.article).subscribe({
+              next: (createdArticle) => {
+                  if (createdArticle) {
+                    console.log('createdArticle.id:'+createdArticle.id);
+                      this.feedbackMessage = 'Article created successfully!';
+                      this.loading = false;
+                      this.router.navigate(['/article-details', createdArticle.id]);
+                  } else {
+                      this.feedbackMessage = 'Failed to create article.';
+                      this.loading = false;
+                  }
+              },
+              error: err => {
+                  this.feedbackMessage = 'An error occurred while creating the article.';
+                  this.loading = false;
+                  console.error('Create error:', err);
+              }
+           });
         }
     } else {
         this.feedbackMessage = 'Invalid article data.';
@@ -168,17 +177,38 @@ export class ArticleEditionComponent implements OnInit {
       this.location.back();
   }
   
-  onFileSelect(event: any) {
-      const file = event.target.files[0];
-      if (file) {
-          const reader = new FileReader();
-          reader.onload = (e: any) => {
-              if(this.article)
-                this.article.image_data = e.target.result;
-          };
-          reader.readAsDataURL(file);
+  fileChangeEvent(fileInput: any) {
+    this.imageError = null;
+    
+    if (fileInput.target.files && fileInput.target.files[0]) {
+      const MAX_SIZE = 20971520;
+      const ALLOWED_TYPES = ['image/png', 'image/jpeg'];
+
+      if (fileInput.target.files[0].size > MAX_SIZE) {
+        this.imageError = 'Maximum size allowed is ' + MAX_SIZE / 1000 + 'MB';
+        return;
       }
+
+      if (!ALLOWED_TYPES.includes(fileInput.target.files[0].type)) {
+        this.imageError = 'Only Images are allowed ( JPG | PNG )';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const base64String = e.target.result;
+        this.cardImageBase64 = base64String; 
+        this.isImageSaved = true;
+        
+        this.article.image_media_type = fileInput.target.files[0].type;
+        this.article.image_data = base64String.split(',')[1];  
+        this.article.thumbnail_image = base64String.split(',')[1];  
+      };
+
+      reader.readAsDataURL(fileInput.target.files[0]);
+    }
   }
+
 
   get form() {
     return this.articleForm;
@@ -199,7 +229,7 @@ export class ArticleEditionComponent implements OnInit {
   get body(){
     return this.articleForm.get('body');
   }
-  get image(){
-    return this.articleForm.get('image');
+  get image_data(){
+    return this.articleForm.get('image_data');
   }
 }

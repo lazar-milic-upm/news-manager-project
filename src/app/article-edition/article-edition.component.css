@@ -17,7 +17,13 @@ input.ng-dirty.ng-touched.ng-valid {
 input.ng-pristine.ng-touched.ng-valid {
     border: 1px solid #28a745;
 }
+option.ng-pristine.ng-touched.ng-valid {
+    border: 1px solid #28a745;
+}
 input.ng-invalid.ng-touched, textarea.ng-invalid.ng-touched {
+    border: 1px solid red;
+}
+option.ng-invalid.ng-touched {
     border: 1px solid red;
 }
 

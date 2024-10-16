@@ -66,6 +66,7 @@ export class ArticleDetailsComponent implements OnInit {
       this.newsService.deleteArticle(articleId).subscribe({
         next: () => {
           alert('Article removed successfully.');
+          this.goBackToArticles();
         },
         error: (err) => {
           alert('Failed to remove article. Please try again.');
