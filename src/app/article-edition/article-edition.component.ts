@@ -34,7 +34,6 @@ export class ArticleEditionComponent implements OnInit {
   categories: string[] = ['National', 'Economy', 'Sports', 'Technology'];
   isEditing: boolean = false;
   feedbackMessage: string | null = null;
-  loading: boolean = false;
   articleForm: FormGroup;
   articleId: string | null;
   username: string | null | undefined;
@@ -42,6 +41,7 @@ export class ArticleEditionComponent implements OnInit {
   isImageSaved: boolean = false;
   cardImageBase64: string | null = null;
   cardImageType: string | null | undefined;
+  isCreateArticleDisabled: boolean = false;
 
   constructor(private newsService: NewsService, private loginService: LoginService,private router: Router, private route: ActivatedRoute, private location: Location, private fb: FormBuilder,) {
     this.articleForm = this.fb.group({
@@ -80,7 +80,6 @@ export class ArticleEditionComponent implements OnInit {
   }
 
   loadArticle(articleId: string) {
-    this.loading = true;
     this.newsService.getArticle(articleId).subscribe({
         next: article => {
             this.article = article;
@@ -89,8 +88,7 @@ export class ArticleEditionComponent implements OnInit {
             this.articleForm.patchValue(article);
             if(this.username)
               this.article.username = this.username;
-            this.loading = false;
-
+            
             if(this.article.image_data){
               this.isImageSaved = true;
               this.cardImageBase64 = this.article.image_data;
@@ -101,7 +99,7 @@ export class ArticleEditionComponent implements OnInit {
         },
         error: err => {
             this.feedbackMessage = 'Error loading article.';
-            this.loading = false;
+            
             console.error(err);
         }
     });
@@ -127,16 +125,16 @@ export class ArticleEditionComponent implements OnInit {
                   if (updatedArticle) {
                       this.feedbackMessage = 'Article updated successfully!';
                       console.log(this.feedbackMessage);
-                      this.loading = false;
+                      
                       this.router.navigate(['/article-details', updatedArticle.id]); // Navigate to article details
                   } else {
                       this.feedbackMessage = 'Failed to update article.';
-                      this.loading = false;
+                      
                   }
               },
               error: err => {
                   this.feedbackMessage = 'An error occurred while updating the article.';
-                  this.loading = false;
+                  
                   console.error('Update error:', err);
               }
           });
@@ -145,21 +143,22 @@ export class ArticleEditionComponent implements OnInit {
             console.log('this.article: ' + this.article);
             //this.article.id = random(9900,10000).toString();
             this.article.id = null;
+            this.isCreateArticleDisabled = true;
             this.newsService.createArticle(this.article).subscribe({
               next: (createdArticle) => {
                   if (createdArticle) {
                     console.log('createdArticle.id:'+createdArticle.id);
                       this.feedbackMessage = 'Article created successfully!';
-                      this.loading = false;
+                      window.confirm('The article has been created and you will be redirected to the article detail page.');
                       this.router.navigate(['/article-details', createdArticle.id]);
                   } else {
                       this.feedbackMessage = 'Failed to create article.';
-                      this.loading = false;
+                      this.isCreateArticleDisabled = false;
                   }
               },
               error: err => {
                   this.feedbackMessage = 'An error occurred while creating the article.';
-                  this.loading = false;
+                  this.isCreateArticleDisabled = false;
                   console.error('Create error:', err);
               }
            });
