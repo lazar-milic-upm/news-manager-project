@@ -6,6 +6,7 @@ import { Article } from '../interfaces/article';
 import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf, Location, CommonModule } from '@angular/common';
 import { HeaderComponent } from '../header/header.component';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
     selector: 'app-article-details',

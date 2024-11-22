@@ -8,6 +8,7 @@ import { ArticleCategoryFilterPipe } from '../pipes/article-category-filter.pipe
 import { ArticleTextFilterPipe } from '../pipes/article-text-filter.pipe';
 import { LoginService } from '../services/login.service';
 import { HeaderComponent } from "../header/header.component";
+import { NotificationService } from '../services/notification.service';
 
 declare var bootstrap: any;
 @Component({
@@ -29,7 +30,7 @@ export class ArticleListComponent implements OnInit{
     username: string | null | undefined;
     selectedPill: string = 'All';
 
-    constructor(private newsService: NewsService, private router: Router, public loginService: LoginService) {}
+    constructor(private newsService: NewsService, private router: Router, public loginService: LoginService, private notificationService: NotificationService,) {}
 
     ngOnInit(): void {
 
@@ -86,10 +87,12 @@ export class ArticleListComponent implements OnInit{
             this.newsService.deleteArticle(articleId).subscribe({
                 next: () => {
                     alert('Article removed successfully.');
+                    this.notificationService.notify('Success', 'Article removed successfully.');
                     this.articles = this.articles.filter(article => article.id !== articleId);
                 },
                 error: (err) => {
                     alert('Failed to remove article. Please try again.');
+                    this.notificationService.notify('Error', 'Failed to remove article. Please try again.');
                     console.error('Error removing article:', err);
                 }
             });

@@ -8,6 +8,7 @@ import { QuillModule } from 'ngx-quill';
 import { LoginService } from '../services/login.service';
 import { HeaderComponent } from '../header/header.component';
 import _, { random } from 'lodash';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
     selector: 'app-article-edition',
@@ -43,7 +44,7 @@ export class ArticleEditionComponent implements OnInit {
     cardImageType: string | null | undefined;
     isCreateArticleDisabled: boolean = false;
 
-    constructor(private newsService: NewsService, private loginService: LoginService,private router: Router, private route: ActivatedRoute, private location: Location, private fb: FormBuilder,) {
+    constructor(private newsService: NewsService, private loginService: LoginService,private router: Router, private route: ActivatedRoute, private location: Location, private fb: FormBuilder, private notificationService: NotificationService) {
         this.articleForm = this.fb.group({
             title: ['', Validators.required],
             subtitle: ['', Validators.required],
@@ -122,14 +123,16 @@ export class ArticleEditionComponent implements OnInit {
                 next: (updatedArticle) => {
                     if (updatedArticle) {
                         this.feedbackMessage = 'Article updated successfully!';
+                        this.notificationService.notify('Success', 'Article updated successfully!');
                         this.router.navigate(['/article-details', updatedArticle.id]);
                     } else {
                         this.feedbackMessage = 'Failed to update article.';
+                        this.notificationService.notify('Fail', 'Failed to update article.');
                     }
                 },
                 error: err => {
                     this.feedbackMessage = 'An error occurred while updating the article.';
-                    
+                    this.notificationService.notify('Error', 'An error occurred while updating the article.');
                     console.error('Update error:', err);
                 }
             });
@@ -142,15 +145,18 @@ export class ArticleEditionComponent implements OnInit {
                       if (createdArticle) {
                           console.log('createdArticle.id:'+createdArticle.id);
                           this.feedbackMessage = 'Article created successfully!';
+                          this.notificationService.notify('Success', 'Article created successfully!');
                           window.confirm('The article has been created and you will be redirected to the article detail page.');
                           this.router.navigate(['/article-details', createdArticle.id]);
                       } else {
                           this.feedbackMessage = 'Failed to create article.';
+                          this.notificationService.notify('Fail', 'Failed to update article.');
                           this.isCreateArticleDisabled = false;
                       }
                   },
                   error: err => {
                       this.feedbackMessage = 'An error occurred while creating the article.';
+                      this.notificationService.notify('Error', 'An error occurred while updating the article.');
                       this.isCreateArticleDisabled = false;
                       console.error('Create error:', err);
                   }
@@ -158,6 +164,7 @@ export class ArticleEditionComponent implements OnInit {
           }
       } else {
           this.feedbackMessage = 'Invalid article data.';
+          this.notificationService.notify('Error', 'Invalid article data.');
       }
     }
 
