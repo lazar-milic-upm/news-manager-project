@@ -86,12 +86,12 @@ export class ArticleListComponent implements OnInit{
         if (window.confirm('Are you sure you want to remove this article?')) {
             this.newsService.deleteArticle(articleId).subscribe({
                 next: () => {
-                    alert('Article removed successfully.');
+                    //alert('Article removed successfully.');
                     this.notificationService.notify('Success', 'Article removed successfully.');
                     this.articles = this.articles.filter(article => article.id !== articleId);
                 },
                 error: (err) => {
-                    alert('Failed to remove article. Please try again.');
+                    //alert('Failed to remove article. Please try again.');
                     this.notificationService.notify('Error', 'Failed to remove article. Please try again.');
                     console.error('Error removing article:', err);
                 }
