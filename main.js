@@ -1,7 +1,9 @@
 const { app, BrowserWindow, ipcMain, Notification } = require('electron');
 const path = require('path');
+const Store = require('electron-store');
 
 let mainWindow;
+const userStore = new Store();
 
 app.on('ready', () => {
     mainWindow = new BrowserWindow({
@@ -16,8 +18,15 @@ app.on('ready', () => {
 
     mainWindow.loadURL('http://localhost:4200');
 
-    ipcMain.on('notify', (event, { title, body, action }) => {
-        showNotification(title, body, action);
+    ipcMain.handle('save-token', (event, token) => {
+        userStore.set('userToken', token);
+        console.log('Token saved:', token);
+    });
+
+    ipcMain.handle('get-token', () => {
+        const token = userStore.get('userToken');
+        console.log('Token retrieved:', token);
+        return token;
     });
 
     mainWindow.on('closed', () => {
@@ -29,31 +38,4 @@ app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
     }
-});
-
-function showNotification(title, body, action = null) {
-    const notification = new Notification({
-        title: title,
-        body: body,
-    });
-
-    if (action) {
-        notification.on('click', () => {
-            mainWindow.webContents.send('notification-click', action);
-        });
-    }
-
-    notification.show();
-}
-
-
-
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
-});
-
-ipcMain.on('notify', (event, { title, body, action }) => {
-    showNotification(title, body, action);
 });

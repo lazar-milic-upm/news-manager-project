@@ -27,17 +27,23 @@ export class LoginService {
     return this.user != null;
   }
 
-  login(name: string, pwd: string): Observable<User> {
-    const usereq = new HttpParams()
-      .set('username', name)
-      .set('passwd', pwd);
-
-    return this.http.post<User>(this.loginUrl, usereq).pipe(
-      tap(user => {
-        this.user = user;
-      })
+  login(username: string, password: string) {
+    return this.http.post('/api/login', { username, password }).pipe(
+        tap((response: any) => {
+            const token = response.token;
+            if (token && window.electronAPI) {
+                window.electronAPI.saveToken(token);
+            }
+        })
     );
+}
+
+getToken() {
+  if (window.electronAPI) {
+      return window.electronAPI.getToken();
   }
+  return null;
+}
 
   getUser() {
     return this.user;

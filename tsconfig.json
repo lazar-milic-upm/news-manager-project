@@ -22,12 +22,17 @@
     "lib": [
       "ES2022",
       "dom"
-    ]
+    ],
   },
+  "include": [
+    "src/**/*.ts",
+    "src/electron.d.ts" // Explicitly include the custom type definition
+  ],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   }
+  
 }
